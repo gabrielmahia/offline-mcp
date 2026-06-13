@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "offline-mcp"
+version = "0.1.0"
+description = "Local AI inference for East Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools. Thesis "
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = ["fastmcp>=0.9"]
+
+[project.scripts]
+offline-mcp = "offline_mcp.server:mcp.run"
+
+[tool.setuptools.packages.find]
+where = ["src"]
