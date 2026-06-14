@@ -1,0 +1,62 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/1.0.0/server.json",
+  "name": "offline-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for offline and local AI deployment \u2014 Ollama status check, local model inference, recommended models for East Africa, degraded-mode guide, open weights directory, and rural deployment guide. 6 tools.",
+  "license": "MIT",
+  "homepage": "https://gabrielmahia.github.io",
+  "author": {
+    "name": "Gabriel Mahia",
+    "email": "contact@aikungfu.dev",
+    "url": "https://gabrielmahia.github.io"
+  },
+  "keywords": [
+    "ollama",
+    "offline",
+    "local-ai",
+    "open-weights",
+    "africa",
+    "sovereign",
+    "llm",
+    "mcp",
+    "rural"
+  ],
+  "categories": [
+    "Research & Data"
+  ],
+  "tools": [
+    {
+      "name": "ollama_status",
+      "description": "Ollama status check"
+    },
+    {
+      "name": "local_inference",
+      "description": "Local model inference"
+    },
+    {
+      "name": "recommended_models",
+      "description": "Recommended models for Africa"
+    },
+    {
+      "name": "degraded_mode_guide",
+      "description": "Degraded-mode operation guide"
+    },
+    {
+      "name": "open_weights_directory",
+      "description": "Open weights directory"
+    },
+    {
+      "name": "deployment_guide",
+      "description": "Rural deployment guide (Raspberry Pi + solar)"
+    }
+  ],
+  "installation": {
+    "type": "pip",
+    "package": "offline-mcp",
+    "command": "pip install offline-mcp"
+  },
+  "links": {
+    "github": "https://github.com/gabrielmahia/offline-mcp",
+    "pypi": "https://pypi.org/project/offline-mcp"
+  }
+}
