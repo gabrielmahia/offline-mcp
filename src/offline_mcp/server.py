@@ -5,7 +5,7 @@ Build for local inference, open weights, degraded operation.
 from __future__ import annotations
 from typing import Optional
 from fastmcp import FastMCP
-mcp = FastMCP(name="offline-mcp", description="Local AI inference infrastructure for Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools.")
+mcp = FastMCP(name="offline-mcp", instructions="Local AI inference infrastructure for Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools.")
 
 RECOMMENDED_MODELS = [
     {"name": "llama3.2:3b", "size_gb": 2.0, "ram_gb": 4, "use_case": "General civic queries, fast responses",
