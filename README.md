@@ -10,6 +10,30 @@ This matters more in Africa than anywhere else.
 
 **1st world equivalent:** Ollama, LLaMA, Mistral local deployment
 
+
+## Why This Exists: Data Sovereignty
+
+> *"If you take the deal, you're going to be exploited. If you don't take it, you're going to die."*  
+> — Frank Ssekamwa, Ugandan digital rights expert
+
+Across the Global South, AI and health data from communities is being extracted, processed abroad,
+and used to build models whose value flows away from the communities that generated it.
+
+`offline-mcp` is the **sovereignty floor** of the East Africa coordination stack.
+
+When this runs on a Raspberry Pi 4 with a 50W solar panel and a 256GB SD card:
+- Health data stays in the clinic. Health guidance comes from local models.
+- Land records stay in the land office. Queries don't touch foreign servers.
+- Civic data stays in the county. AI assistance runs without internet.
+
+**No API key. No cloud dependency. No data leaving the community.**
+
+The models available via `offline-mcp` (Llama 3.2, Qwen 2.5) run entirely on device.
+Community data used to generate AI outputs creates no dataset sent back to model providers.
+
+This is not a privacy feature. It is the architectural foundation of digital independence.
+
+---
 ## Install
 ```bash
 pip install offline-mcp
