@@ -1,6 +1,7 @@
 # offline-mcp
 
 [![offline-mcp Glama score](https://glama.ai/mcp/servers/gabrielmahia/offline-mcp/badges/score.svg)](https://glama.ai/mcp/servers/gabrielmahia/offline-mcp)
+[![smithery badge](https://smithery.ai/badge/@gabrielmahia/offline-mcp)](https://smithery.ai/server/@gabrielmahia/offline-mcp)
 
 
 > Local AI inference infrastructure — Ollama wrapper, open weights directory, degraded-mode guide for East Africa.
