@@ -16,3 +16,4 @@ offline-mcp = "offline_mcp.server:mcp.run"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+# build: 1782218507
