@@ -46,6 +46,28 @@ Community data used to generate AI outputs creates no dataset sent back to model
 This is not a privacy feature. It is the architectural foundation of digital independence.
 
 ---
+
+## Research Foundation
+
+This server implements patterns validated by peer-reviewed research on offline-first
+AI for bandwidth-constrained environments:
+
+**arXiv:2603.03339** (2026) — *Offline-First LLM Architecture for Adaptive Learning
+in Low-Connectivity Environments* — confirms that meaningful AI support is achievable
+with hardware-aware model selection when designed for infrastructure-limited deployment.
+Key finding: offline-first is a *complementary* paradigm, not a compromise.
+
+**Design principles applied:**
+- Local-first: all core operations execute without internet connectivity
+- Graceful degradation: reduced functionality beats no functionality
+- JSONL queue: events accumulated offline sync when connectivity returns
+- Hardware-aware: tool selection adapts to available compute
+
+**East Africa context:**
+Kenya, Tanzania, Uganda — rural areas with intermittent connectivity represent
+the primary deployment target. This server is not designed for ideal conditions.
+It is designed for real ones.
+
 ## Install
 ```bash
 pip install offline-mcp
