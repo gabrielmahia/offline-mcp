@@ -141,3 +141,7 @@ def local_deployment_guide(device_type: Optional[str] = "laptop") -> dict:
     return {"source": "AI-KungFU offline deployment guide", "device_type": device_type,
             **guide, "all_options": list(GUIDES.keys()),
             "solar_note": "Ollama on Raspberry Pi can run on a 50W solar panel — viable for rural Kenya clinics, schools, and offices."}
+
+def main() -> None:
+    """Console entry point."""
+    mcp.run()

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "offline-mcp"
-version = "0.1.2"
+version = "0.1.3"
 description = "Local AI inference for Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools."
 readme = "README.md"
 license = { text = "MIT" }
