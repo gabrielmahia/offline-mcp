@@ -14,6 +14,12 @@ dependencies = ["fastmcp>=0.9"]
 [project.scripts]
 offline-mcp = "offline_mcp.server:mcp.run"
 
+[project.urls]
+Homepage = "https://github.com/gabrielmahia/offline-mcp"
+Documentation = "https://github.com/gabrielmahia/nairobi-stack"
+"MCP Registry" = "https://registry.modelcontextprotocol.io"
+Datasets = "https://huggingface.co/gmahia"
+Evaluation = "https://github.com/gabrielmahia/kipimo"
 [tool.setuptools.packages.find]
 where = ["src"]
 # build: 1782218507
