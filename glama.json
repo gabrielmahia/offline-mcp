@@ -1,8 +1,8 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/1.0.0/server.json",
   "name": "offline-mcp",
-  "version": "0.1.0",
-  "description": "MCP server for offline and local AI deployment \u2014 Ollama status check, local model inference, recommended models for East Africa, degraded-mode guide, open weights directory, and rural deployment guide. 6 tools.",
+  "version": "0.1.4",
+  "description": "Local AI inference for Africa — Ollama, open weights, degraded-mode fallbacks",
   "license": "MIT",
   "homepage": "https://gabrielmahia.github.io",
   "author": {
@@ -36,28 +36,28 @@
   ],
   "tools": [
     {
-      "name": "ollama_status",
-      "description": "Ollama status check"
+      "name": "check_ollama_status",
+      "description": "Check if Ollama is running locally and list available models."
     },
     {
-      "name": "local_inference",
-      "description": "Local model inference"
+      "name": "run_local_inference",
+      "description": "Run a prompt through a local Ollama model."
     },
     {
-      "name": "recommended_models",
-      "description": "Recommended models for Africa"
+      "name": "list_recommended_models",
+      "description": "List recommended open-weight models for East Africa AI use cases."
     },
     {
       "name": "degraded_mode_guide",
-      "description": "Degraded-mode operation guide"
+      "description": "Guide for operating AI systems when cloud connectivity fails."
     },
     {
       "name": "open_weights_directory",
-      "description": "Open weights directory"
+      "description": "Directory of open-weight AI models suitable for East Africa civic use cases."
     },
     {
-      "name": "deployment_guide",
-      "description": "Rural deployment guide (Raspberry Pi + solar)"
+      "name": "local_deployment_guide",
+      "description": "Guide to deploying local AI inference on modest hardware in Kenya/East Africa."
     }
   ],
   "installation": {
@@ -68,5 +68,8 @@
   "links": {
     "github": "https://github.com/gabrielmahia/offline-mcp",
     "pypi": "https://pypi.org/project/offline-mcp"
-  }
+  },
+  "maintainers": [
+    "gabrielmahia"
+  ]
 }
