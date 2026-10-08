@@ -3,8 +3,16 @@ Layer 4: Never assume OpenAI survives or stays accessible.
 Build for local inference, open weights, degraded operation.
 """
 from __future__ import annotations
+
 from typing import Optional
+
 from fastmcp import FastMCP
+
+# Annotations tell clients which tools are safe to auto-approve (read-only, no side effects).
+READ_ONLY = {"readOnlyHint": True, "idempotentHint": True, "openWorldHint": False}
+STATUS = {"readOnlyHint": True, "idempotentHint": True, "openWorldHint": True}  # talks to the local Ollama service
+INFER = {"readOnlyHint": True, "idempotentHint": False, "openWorldHint": True}  # model output varies; calls the local Ollama service
+
 mcp = FastMCP(name="offline-mcp", instructions="Local AI inference infrastructure for Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools.")
 
 RECOMMENDED_MODELS = [
@@ -20,7 +28,7 @@ RECOMMENDED_MODELS = [
      "command": "ollama pull qwen2.5:3b", "africa_fit": "Strong multilingual support for Swahili"},
 ]
 
-@mcp.tool(name="check_ollama_status", description="Check if Ollama is running locally and list available models.")
+@mcp.tool(name="check_ollama_status", description="Check if Ollama is running locally and list available models.", annotations=STATUS)
 def check_ollama_status() -> dict:
     import urllib.request as ur
     try:
@@ -30,16 +38,16 @@ def check_ollama_status() -> dict:
             models = [m["name"] for m in d.get("models", [])]
             return {"ollama_running": True, "models_available": models,
                     "count": len(models), "api_endpoint": "http://localhost:11434"}
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  (tool boundary: return the error to the model instead of crashing the server)
         return {"ollama_running": False, "error": str(e),
                 "install_guide": "curl https://ollama.ai/install.sh | sh",
                 "windows": "Download from ollama.ai/download",
                 "note": "Ollama provides local AI inference — no internet required once models are downloaded."}
 
-@mcp.tool(name="run_local_inference", description="Run a prompt through a local Ollama model.")
-def run_local_inference(prompt: str, model: Optional[str] = "llama3.2:3b") -> dict:
-    import urllib.request as ur
+@mcp.tool(name="run_local_inference", description="Run a prompt through a local Ollama model.", annotations=INFER)
+def run_local_inference(prompt: str, model: str | None = "llama3.2:3b") -> dict:
     import json as js
+    import urllib.request as ur
     data = js.dumps({"model": model, "prompt": prompt, "stream": False}).encode()
     try:
         req = ur.Request("http://localhost:11434/api/generate",
@@ -49,13 +57,13 @@ def run_local_inference(prompt: str, model: Optional[str] = "llama3.2:3b") -> di
             result = js.loads(r.read())
             return {"status": "ok", "model": model, "response": result.get("response",""),
                     "offline": True, "tokens": result.get("eval_count", 0)}
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001  (tool boundary: return the error to the model instead of crashing the server)
         return {"status": "error", "error": str(e),
                 "fallback": "Ollama not running. Start with: ollama serve",
                 "offline": False}
 
-@mcp.tool(name="list_recommended_models", description="List recommended open-weight models for East Africa AI use cases.")
-def list_recommended_models(use_case: Optional[str] = None, max_ram_gb: Optional[int] = None) -> dict:
+@mcp.tool(name="list_recommended_models", description="List recommended open-weight models for East Africa AI use cases.", annotations=READ_ONLY)
+def list_recommended_models(use_case: str | None = None, max_ram_gb: int | None = None) -> dict:
     models = RECOMMENDED_MODELS
     if max_ram_gb:
         models = [m for m in models if m["ram_gb"] <= max_ram_gb]
@@ -66,7 +74,7 @@ def list_recommended_models(use_case: Optional[str] = None, max_ram_gb: Optional
             "install_commands": [m["command"] for m in models],
             "note": "All models run locally — no API key, no internet after download, no cost per query."}
 
-@mcp.tool(name="degraded_mode_guide", description="Guide for operating AI systems when cloud connectivity fails.")
+@mcp.tool(name="degraded_mode_guide", description="Guide for operating AI systems when cloud connectivity fails.", annotations=READ_ONLY)
 def degraded_mode_guide() -> dict:
     return {"source": "AI-KungFU offline architecture guide",
             "why_this_matters": "Kenya's connectivity is improving but remains unreliable outside Nairobi/Mombasa. Power outages, data costs, and latency can make cloud AI unusable.",
@@ -85,8 +93,8 @@ def degraded_mode_guide() -> dict:
             "hardware_minimums": {"ram_gb": 4, "storage_gb": 5, "cpu": "Any modern CPU (no GPU required for 3B models)"},
             "raspberry_pi": "Ollama runs on Raspberry Pi 4 (4GB RAM) — viable for rural offline deployments."}
 
-@mcp.tool(name="open_weights_directory", description="Directory of open-weight AI models suitable for East Africa civic use cases.")
-def open_weights_directory(use_case: Optional[str] = None) -> dict:
+@mcp.tool(name="open_weights_directory", description="Directory of open-weight AI models suitable for East Africa civic use cases.", annotations=READ_ONLY)
+def open_weights_directory(use_case: str | None = None) -> dict:
     MODELS = [
         {"name": "Llama 3.2 (Meta)", "sizes": ["1B", "3B", "11B"], "languages": ["en", "sw (limited)"],
          "licence": "Llama 3.2 Community License (free for most uses)", "source": "ollama pull llama3.2"},
@@ -108,8 +116,8 @@ def open_weights_directory(use_case: Optional[str] = None) -> dict:
             "africa_note": "Aya Expanse and Masakhane models have best African language support.",
             "deployment": "All models above can be deployed locally via Ollama or llama.cpp."}
 
-@mcp.tool(name="local_deployment_guide", description="Guide to deploying local AI inference on modest hardware in Kenya/East Africa.")
-def local_deployment_guide(device_type: Optional[str] = "laptop") -> dict:
+@mcp.tool(name="local_deployment_guide", description="Guide to deploying local AI inference on modest hardware in Kenya/East Africa.", annotations=READ_ONLY)
+def local_deployment_guide(device_type: str | None = "laptop") -> dict:
     GUIDES = {
         "laptop": {
             "recommended_model": "llama3.2:3b or gemma2:2b",
