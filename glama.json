@@ -1,7 +1,7 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/1.0.0/server.json",
   "name": "offline-mcp",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Local AI inference for Africa — Ollama, open weights, degraded-mode fallbacks",
   "license": "MIT",
   "homepage": "https://gabrielmahia.github.io",
