@@ -4,9 +4,10 @@ Build for local inference, open weights, degraded operation.
 """
 from __future__ import annotations
 
-from typing import Optional
+from typing import Annotated, Optional
 
 from fastmcp import FastMCP
+from pydantic import Field
 
 # Annotations tell clients which tools are safe to auto-approve (read-only, no side effects).
 READ_ONLY = {"readOnlyHint": True, "idempotentHint": True, "openWorldHint": False}
@@ -28,7 +29,7 @@ RECOMMENDED_MODELS = [
      "command": "ollama pull qwen2.5:3b", "africa_fit": "Strong multilingual support for Swahili"},
 ]
 
-@mcp.tool(name="check_ollama_status", description="Check if Ollama is running locally and list available models.", annotations=STATUS)
+@mcp.tool(name="check_ollama_status", description="Check whether a local Ollama server is running at localhost:11434 and which models it has. Use before run_local_inference, or when someone asks whether offline AI is ready. Takes no arguments and contacts only your own machine (3 second timeout). Returns ollama_running, the model names, a count and the endpoint, or ollama_running false with the error and a link to the official download page. Read-only: it only lists models.", annotations=STATUS)
 def check_ollama_status() -> dict:
     import urllib.request as ur
     try:
@@ -40,12 +41,12 @@ def check_ollama_status() -> dict:
                     "count": len(models), "api_endpoint": "http://localhost:11434"}
     except Exception as e:  # noqa: BLE001  (tool boundary: return the error to the model instead of crashing the server)
         return {"ollama_running": False, "error": str(e),
-                "install_guide": "curl https://ollama.ai/install.sh | sh",
-                "windows": "Download from ollama.ai/download",
+                "install_guide": "Download the installer from https://ollama.com/download",
+                "windows": "Download from ollama.com/download",
                 "note": "Ollama provides local AI inference — no internet required once models are downloaded."}
 
-@mcp.tool(name="run_local_inference", description="Run a prompt through a local Ollama model.", annotations=INFER)
-def run_local_inference(prompt: str, model: str | None = "llama3.2:3b") -> dict:
+@mcp.tool(name="run_local_inference", description="Send a prompt to a local Ollama model and return its answer, with no internet needed once the model is downloaded. Use when no cloud model is reachable or the text must stay on the machine. The prompt goes only to Ollama at localhost:11434 (60 second timeout, non-streaming) and nothing is stored by this tool. Returns the response text, the model used, the token count and offline true, or an error with a hint to start Ollama if it is not running. Read-only with respect to your data; it uses local compute, and answers from small models can be wrong.", annotations=INFER)
+def run_local_inference(prompt: Annotated[str, Field(description="The text to send to the local model. It is sent only to localhost.")], model: Annotated[str | None, Field(description="Ollama model name (default llama3.2:3b); it must already be pulled.")] = "llama3.2:3b") -> dict:
     import json as js
     import urllib.request as ur
     data = js.dumps({"model": model, "prompt": prompt, "stream": False}).encode()
@@ -62,8 +63,8 @@ def run_local_inference(prompt: str, model: str | None = "llama3.2:3b") -> dict:
                 "fallback": "Ollama not running. Start with: ollama serve",
                 "offline": False}
 
-@mcp.tool(name="list_recommended_models", description="List recommended open-weight models for East Africa AI use cases.", annotations=READ_ONLY)
-def list_recommended_models(use_case: str | None = None, max_ram_gb: int | None = None) -> dict:
+@mcp.tool(name="list_recommended_models", description="Recommend open-weights models that run locally through Ollama, with size, RAM need, use case and language fit for Africa. Use when someone asks which model to install for their hardware or task. max_ram_gb keeps models that fit; use_case filters by matching text and, if nothing matches, ALL models are returned. Returns the source label, the recommended models, their install commands and a note that they run locally. A curated list labelled by the author, not a benchmark: check model cards. Read-only; no side effects.", annotations=READ_ONLY)
+def list_recommended_models(use_case: Annotated[str | None, Field(description="Optional use case such as translation or coding.")] = None, max_ram_gb: Annotated[int | None, Field(description="Optional RAM limit in GB; keeps models that fit.")] = None) -> dict:
     models = RECOMMENDED_MODELS
     if max_ram_gb:
         models = [m for m in models if m["ram_gb"] <= max_ram_gb]
@@ -74,7 +75,7 @@ def list_recommended_models(use_case: str | None = None, max_ram_gb: int | None 
             "install_commands": [m["command"] for m in models],
             "note": "All models run locally — no API key, no internet after download, no cost per query."}
 
-@mcp.tool(name="degraded_mode_guide", description="Guide for operating AI systems when cloud connectivity fails.", annotations=READ_ONLY)
+@mcp.tool(name="degraded_mode_guide", description="Guide to running AI when connectivity or power is unreliable: why it matters, how to install Ollama, pull a small model, test it and point MCP clients at localhost, with hardware minimums and a Raspberry Pi note. Use when planning an offline or low-bandwidth deployment. Takes no arguments. Returns the explanation, numbered setup steps, hardware minimums and deployment tips. A static guide: follow the vendor's own install instructions at ollama.com. Read-only; no side effects.", annotations=READ_ONLY)
 def degraded_mode_guide() -> dict:
     return {"source": "AI-KungFU offline architecture guide",
             "why_this_matters": "Kenya's connectivity is improving but remains unreliable outside Nairobi/Mombasa. Power outages, data costs, and latency can make cloud AI unusable.",
@@ -85,7 +86,7 @@ def degraded_mode_guide() -> dict:
                 "level_4_static_reference": "Static lookup tables and reference data only. No AI inference.",
             },
             "implementation": {
-                "step_1": "Install Ollama: curl https://ollama.ai/install.sh | sh",
+                "step_1": "Install Ollama from https://ollama.com/download",
                 "step_2": "Download a model: ollama pull llama3.2:3b (2GB)",
                 "step_3": "Test: ollama run llama3.2:3b 'Hello, what is the KRA PIN number format?'",
                 "step_4": "Configure MCP clients to use localhost:11434 as fallback",
@@ -93,8 +94,8 @@ def degraded_mode_guide() -> dict:
             "hardware_minimums": {"ram_gb": 4, "storage_gb": 5, "cpu": "Any modern CPU (no GPU required for 3B models)"},
             "raspberry_pi": "Ollama runs on Raspberry Pi 4 (4GB RAM) — viable for rural offline deployments."}
 
-@mcp.tool(name="open_weights_directory", description="Directory of open-weight AI models suitable for East Africa civic use cases.", annotations=READ_ONLY)
-def open_weights_directory(use_case: str | None = None) -> dict:
+@mcp.tool(name="open_weights_directory", description="Directory of open-weights model families with sizes, languages and licences, including African-language support such as Aya and Masakhane work. Use when someone asks which open models cover Swahili or other African languages. use_case filters by matching text; if nothing matches, ALL models are returned. Returns the source label, the models, an Africa note and how to deploy them locally. A curated starting list, not exhaustive or benchmarked: check each model card for languages and licence. Read-only; no side effects.", annotations=READ_ONLY)
+def open_weights_directory(use_case: Annotated[str | None, Field(description="Optional filter text such as swahili.")] = None) -> dict:
     MODELS = [
         {"name": "Llama 3.2 (Meta)", "sizes": ["1B", "3B", "11B"], "languages": ["en", "sw (limited)"],
          "licence": "Llama 3.2 Community License (free for most uses)", "source": "ollama pull llama3.2"},
@@ -116,13 +117,13 @@ def open_weights_directory(use_case: str | None = None) -> dict:
             "africa_note": "Aya Expanse and Masakhane models have best African language support.",
             "deployment": "All models above can be deployed locally via Ollama or llama.cpp."}
 
-@mcp.tool(name="local_deployment_guide", description="Guide to deploying local AI inference on modest hardware in Kenya/East Africa.", annotations=READ_ONLY)
-def local_deployment_guide(device_type: str | None = "laptop") -> dict:
+@mcp.tool(name="local_deployment_guide", description="Setup guide for running a local model on a device type: laptop, Raspberry Pi and others in the table, with hardware, install steps and a model suggestion. Use when someone asks how to deploy offline AI on specific hardware. An unrecognised device_type returns the laptop guide. Returns the source label, the device_type, the guide, all_options and a solar note. A static guide: follow the vendor's install instructions. Read-only; no side effects.", annotations=READ_ONLY)
+def local_deployment_guide(device_type: Annotated[str | None, Field(description="laptop (default), raspberry_pi or another device in the table.")] = "laptop") -> dict:
     GUIDES = {
         "laptop": {
             "recommended_model": "llama3.2:3b or gemma2:2b",
             "min_specs": "4GB RAM, 5GB storage, any modern CPU",
-            "setup": "1. Install Ollama (ollama.ai) 2. ollama pull llama3.2:3b 3. ollama serve",
+            "setup": "1. Install Ollama (ollama.com/download) 2. ollama pull llama3.2:3b 3. ollama serve",
             "inference_speed": "~5-20 tokens/second on 4-core CPU",
         },
         "server": {
@@ -134,7 +135,7 @@ def local_deployment_guide(device_type: str | None = "laptop") -> dict:
         "raspberry_pi": {
             "recommended_model": "gemma2:2b or llama3.2:1b",
             "min_specs": "Raspberry Pi 4 with 4GB RAM, 16GB microSD",
-            "setup": "curl https://ollama.ai/install.sh | sh && ollama pull gemma2:2b",
+            "setup": "Install Ollama from https://ollama.com/download, then: ollama pull gemma2:2b",
             "inference_speed": "~2-5 tokens/second (usable for simple queries)",
             "power": "~15W — solar-compatible for off-grid deployments",
         },

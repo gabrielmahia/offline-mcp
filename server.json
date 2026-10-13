@@ -6,12 +6,12 @@
     "url": "https://github.com/gabrielmahia/offline-mcp",
     "source": "github"
   },
-  "version": "0.1.5",
+  "version": "0.1.6",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "offline-mcp",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "transport": {
         "type": "stdio"
       }
