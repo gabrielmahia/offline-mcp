@@ -37,27 +37,27 @@
   "tools": [
     {
       "name": "check_ollama_status",
-      "description": "Check if Ollama is running locally and list available models."
+      "description": "Check whether a local Ollama server is running at localhost:11434 and which models it has. Use before run_local_inference, or when someone asks whether offline AI is ready. Takes no arguments and contacts only your own machine (3 second timeout). Returns ollama_running, the model names, a count and the endpoint, or ollama_running false with the error and a link to the official download page. Read-only: it only lists models."
     },
     {
       "name": "run_local_inference",
-      "description": "Run a prompt through a local Ollama model."
+      "description": "Send a prompt to a local Ollama model and return its answer, with no internet needed once the model is downloaded. Use when no cloud model is reachable or the text must stay on the machine. The prompt goes only to Ollama at localhost:11434 (60 second timeout, non-streaming) and nothing is stored by this tool. Returns the response text, the model used, the token count and offline true, or an error with a hint to start Ollama if it is not running. Read-only with respect to your data; it uses local compute, and answers from small models can be wrong."
     },
     {
       "name": "list_recommended_models",
-      "description": "List recommended open-weight models for East Africa AI use cases."
+      "description": "Recommend open-weights models that run locally through Ollama, with size, RAM need, use case and language fit for Africa. Use when someone asks which model to install for their hardware or task. max_ram_gb keeps models that fit; use_case filters by matching text and, if nothing matches, ALL models are returned. Returns the source label, the recommended models, their install commands and a note that they run locally. A curated list labelled by the author, not a benchmark: check model cards. Read-only; no side effects."
     },
     {
       "name": "degraded_mode_guide",
-      "description": "Guide for operating AI systems when cloud connectivity fails."
+      "description": "Guide to running AI when connectivity or power is unreliable: why it matters, how to install Ollama, pull a small model, test it and point MCP clients at localhost, with hardware minimums and a Raspberry Pi note. Use when planning an offline or low-bandwidth deployment. Takes no arguments. Returns the explanation, numbered setup steps, hardware minimums and deployment tips. A static guide: follow the vendor's own install instructions at ollama.com. Read-only; no side effects."
     },
     {
       "name": "open_weights_directory",
-      "description": "Directory of open-weight AI models suitable for East Africa civic use cases."
+      "description": "Directory of open-weights model families with sizes, languages and licences, including African-language support such as Aya and Masakhane work, plus speech and translation resources (WAXAL, Paza, AfriNLLB, TranslateGemma) with their licences. Use when someone asks which open models or datasets cover Swahili or other African languages, or what the licence allows. use_case filters the language models by matching text; if nothing matches, ALL models are returned. Returns the source label, the language models, an Africa note, how to deploy them locally and the speech and translation resources with licence and coverage caveats. A curated starting list, not exhaustive or benchmarked: check each model card for languages and licence. Read-only; no side effects."
     },
     {
       "name": "local_deployment_guide",
-      "description": "Guide to deploying local AI inference on modest hardware in Kenya/East Africa."
+      "description": "Setup guide for running a local model on a device type: laptop, Raspberry Pi and others in the table, with hardware, install steps and a model suggestion. Use when someone asks how to deploy offline AI on specific hardware. An unrecognised device_type returns the laptop guide. Returns the source label, the device_type, the guide, all_options and a solar note. A static guide: follow the vendor's install instructions. Read-only; no side effects."
     }
   ],
   "installation": {
