@@ -94,7 +94,7 @@ def degraded_mode_guide() -> dict:
             "hardware_minimums": {"ram_gb": 4, "storage_gb": 5, "cpu": "Any modern CPU (no GPU required for 3B models)"},
             "raspberry_pi": "Ollama runs on Raspberry Pi 4 (4GB RAM) — viable for rural offline deployments."}
 
-@mcp.tool(name="open_weights_directory", description="Directory of open-weights model families with sizes, languages and licences, including African-language support such as Aya and Masakhane work. Use when someone asks which open models cover Swahili or other African languages. use_case filters by matching text; if nothing matches, ALL models are returned. Returns the source label, the models, an Africa note and how to deploy them locally. A curated starting list, not exhaustive or benchmarked: check each model card for languages and licence. Read-only; no side effects.", annotations=READ_ONLY)
+@mcp.tool(name="open_weights_directory", description="Directory of open-weights model families with sizes, languages and licences, including African-language support such as Aya and Masakhane work, plus speech and translation resources (WAXAL, Paza, AfriNLLB, TranslateGemma) with their licences. Use when someone asks which open models or datasets cover Swahili or other African languages, or what the licence allows. use_case filters the language models by matching text; if nothing matches, ALL models are returned. Returns the source label, the language models, an Africa note, how to deploy them locally and the speech and translation resources with licence and coverage caveats. A curated starting list, not exhaustive or benchmarked: check each model card for languages and licence. Read-only; no side effects.", annotations=READ_ONLY)
 def open_weights_directory(use_case: Annotated[str | None, Field(description="Optional filter text such as swahili.")] = None) -> dict:
     MODELS = [
         {"name": "Llama 3.2 (Meta)", "sizes": ["1B", "3B", "11B"], "languages": ["en", "sw (limited)"],
@@ -115,7 +115,14 @@ def open_weights_directory(use_case: Annotated[str | None, Field(description="Op
         MODELS = [m for m in MODELS if u in str(m).lower()] or MODELS
     return {"source": "HuggingFace, Ollama, Masakhane", "open_models": MODELS,
             "africa_note": "Aya Expanse and Masakhane models have best African language support.",
-            "deployment": "All models above can be deployed locally via Ollama or llama.cpp."}
+            "deployment": "The language models above can be run locally via Ollama or llama.cpp. The speech and translation resources below use other runtimes: see each model card.",
+            "speech_and_translation_resources": [
+                {"name": "WAXAL (google/WaxalNLP)", "kind": "speech dataset", "licence": "CC-BY-SA-4.0 and CC-BY-4.0 are both listed: check the licence of each language configuration before use (share-alike has obligations)", "african_languages": "29 language codes listed, including Swahili (swa_tts) and Kikuyu (kik_tts), which are text-to-speech configurations; speech-recognition data for them is not confirmed"},
+                {"name": "Paza (microsoft/paza-whisper-large-v3-turbo, microsoft/paza-Phi-4-multimodal-instruct)", "kind": "speech recognition models", "licence": "MIT", "african_languages": "see the model card for which languages are covered"},
+                {"name": "AfriNLLB (AfriNLP/AfriNLLB-*)", "kind": "translation models", "licence": "CC-BY-NC-4.0: non-commercial use only", "african_languages": "see the model card for which languages are covered"},
+                {"name": "TranslateGemma (google/translategemma-*)", "kind": "translation models", "licence": "Gemma terms of use, not an OSI open-source licence", "african_languages": "see the model card for which languages are covered"},
+            ],
+            "resources_checked": "2026-10-13 against Hugging Face metadata; language coverage and quality are not benchmarked here"}
 
 @mcp.tool(name="local_deployment_guide", description="Setup guide for running a local model on a device type: laptop, Raspberry Pi and others in the table, with hardware, install steps and a model suggestion. Use when someone asks how to deploy offline AI on specific hardware. An unrecognised device_type returns the laptop guide. Returns the source label, the device_type, the guide, all_options and a solar note. A static guide: follow the vendor's install instructions. Read-only; no side effects.", annotations=READ_ONLY)
 def local_deployment_guide(device_type: Annotated[str | None, Field(description="laptop (default), raspberry_pi or another device in the table.")] = "laptop") -> dict:
