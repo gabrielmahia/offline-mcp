@@ -1,15 +1,24 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "offline-mcp"
-version = "0.1.8"
+version = "0.1.9"
 description = "Local AI inference for Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools."
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
 requires-python = ">=3.10"
 dependencies = ["fastmcp>=2.0.0"]
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+]
 
 [project.scripts]
 offline-mcp = "offline_mcp.server:mcp.run"
