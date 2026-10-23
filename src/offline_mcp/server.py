@@ -4,6 +4,8 @@ Build for local inference, open weights, degraded operation.
 """
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _pkg_version
 from typing import Annotated, Optional
 
 from fastmcp import FastMCP
@@ -14,7 +16,13 @@ READ_ONLY = {"readOnlyHint": True, "idempotentHint": True, "openWorldHint": Fals
 STATUS = {"readOnlyHint": True, "idempotentHint": True, "openWorldHint": True}  # talks to the local Ollama service
 INFER = {"readOnlyHint": True, "idempotentHint": False, "openWorldHint": True}  # model output varies; calls the local Ollama service
 
-mcp = FastMCP(name="offline-mcp", instructions="Local AI inference infrastructure for Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools.")
+try:
+    _VERSION = _pkg_version("offline-mcp")
+except PackageNotFoundError:  # a source tree that was never installed
+    _VERSION = "0+unknown"
+
+
+mcp = FastMCP(name="offline-mcp", instructions="Local AI inference infrastructure for Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools.", version=_VERSION)
 
 RECOMMENDED_MODELS = [
     {"name": "llama3.2:3b", "size_gb": 2.0, "ram_gb": 4, "use_case": "General civic queries, fast responses",
