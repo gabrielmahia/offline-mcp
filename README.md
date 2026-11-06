@@ -2,12 +2,8 @@
 <!-- mcp-name: io.github.gabrielmahia/offline-mcp -->
 
 [![offline-mcp Glama score](https://glama.ai/mcp/servers/gabrielmahia/offline-mcp/badges/score.svg)](https://glama.ai/mcp/servers/gabrielmahia/offline-mcp)
-[![smithery badge](https://smithery.ai/badge/@gabrielmahia/offline-mcp)](https://smithery.ai/server/@gabrielmahia/offline-mcp)
-
 
 Install: `pip install offline-mcp` · Use with any MCP client.
-
-
 
 > Local AI inference infrastructure — Ollama wrapper, open weights directory, degraded-mode guide for East Africa.
 
@@ -18,7 +14,6 @@ Install: `pip install offline-mcp` · Use with any MCP client.
 This matters more in Africa than anywhere else.
 
 **1st world equivalent:** Ollama, LLaMA, Mistral local deployment
-
 
 ## Why This Exists: Data Sovereignty
 
