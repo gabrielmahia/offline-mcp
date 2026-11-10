@@ -3,7 +3,7 @@ message: "If you use this software, please cite it as below."
 type: software
 title: "offline-mcp"
 abstract: "Local AI inference for Africa — Ollama, open weights, degraded-mode fallbacks. 6 tools."
-version: "0.1.12"
+version: "0.1.13"
 authors:
   - family-names: "Mahia"
     given-names: "Gabriel"
